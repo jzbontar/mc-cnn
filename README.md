@@ -7,11 +7,6 @@ The repository contains
 - procedures to train a convolutional neural network on the stereo matching task;
 - a basic stereo method (cross-based cost aggregation, semiglobal matching,
   left-right consistency check, median filter, and bilateral filter); and
-- networks that have been trained on the [KITTI
-  2012](http://www.cvlibs.net/datasets/kitti/eval_stereo_flow.php?benchmark=stereo),
-  [KITTI
-  2015](http://www.cvlibs.net/datasets/kitti/eval_scene_flow.php?benchmark=stereo),
-  and [Middlebury](http://vision.middlebury.edu/stereo/) stereo data sets.
 
 A NVIDIA GPU with at least 6 GB of memory is required to run on the KITTI
 data set and 12 GB to run on the Middlebury data set. We tested the code on GTX
@@ -32,6 +27,11 @@ if you use code from this repository in your work.
 	}
 
 The code is released under the BSD 2-Clause license.
+
+
+Download trained networks
+-------------------------
+
 
 Computing the Matching Cost
 ---------------------------
@@ -207,12 +207,11 @@ examples used for validation; to train on all examples replace use
 	$ ./main.lua kitti slow -a train_all
 
 In the previous command, the KITTI 2012 data set is used. If you wish to train
-on the KITTI 2015 or the Middlebury data sets use one of the following two commands:
+on the KITTI 2015 run
 
 	$ ./main.lua kitti2015 slow -a train_tr
-	$ ./main.lua mb slow -a train_tr
 
-To train the fast architecture instead of the accurate architecture use:
+To train the fast architecture instead of the accurate architecture use
 
 	$ ./main.lua kitti fast -a train_tr
 
@@ -230,11 +229,26 @@ Run `download_middlebury.sh` to download the training data
 
 	$ ./download_middlebury.sh
 
+The data set is downloaded to the `data.mb/unzip` directory.
+
 Compile the [MiddEval3-SDK](http://vision.middlebury.edu/stereo/submit3/). You
 should end up with the `computemask` binary in one of the directories listed in
-your `PATH` enviromential variable.  Run the preprocessing script:
+your `PATH` enviromential variable.  
 
+Install [ImageMagick](http://www.imagemagick.org/script/index.php), as the
+preprocessing steps requires the `convert` binary to resize the images.
+
+Run the preprocessing script:
+
+	$ mkdir data.mb.imperfect_gray
 	$ ./preprocess_mb.py imperfect gray
+	Adirondack
+	Backpack
+	...
+	testH/Staircase
+
+The preprocessing is slow (it takes around 30 minutes) the first time it is
+run, because the images have to be resized.
 
 Use `main.lua` to train the network:
 

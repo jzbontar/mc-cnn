@@ -23,7 +23,7 @@ unzip teddyH-ppm-2.zip
 popd
 
 # 2001 dataset
-wget -r -np -A pgm,txt http://vision.middlebury.edu/stereo/data/scenes2001/data/
+wget -r -np -A pgm,ppm,txt http://vision.middlebury.edu/stereo/data/scenes2001/data/
 # get tsukuba nonocc mask
 pushd .
 cd vision.middlebury.edu/stereo/data/scenes2001/data/tsukuba
