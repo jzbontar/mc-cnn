@@ -43,6 +43,7 @@ Run all following commands in the same directory as this README file.
 
 Compile the shared libraries:
 
+	$ cp Makefile.proto Makefile
 	$ make
 
 The command should produce two files: `libadcensus.so` and `libcv.so`.
