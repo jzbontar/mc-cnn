@@ -160,44 +160,63 @@ KITTI and Middlebury data sets.
 Download both
 
 - the [KITTI 2012](http://www.cvlibs.net/download.php?file=data_stereo_flow.zip) data set and unzip it
-into `src/data.kitti/unzip` (you should end up with a file `data.kitti/unzip/training/image_0/000000_10.png`) and 
+into `data.kitti/unzip` (you should end up with a file `data.kitti/unzip/training/image_0/000000_10.png`) and 
 - the [KITTI 2015](http://www.cvlibs.net/download.php?file=data_scene_flow.zip) data set and unzip it
-into `src/data.kitti2015/unzip` (you should end up with a file `data.kitti2015/unzip/training/image_2/000000_10.png`).
+into `data.kitti2015/unzip` (you should end up with a file `data.kitti2015/unzip/training/image_2/000000_10.png`).
 
 Run the preprocessing script:
 
 	$ ./preprocess_kitti.lua
+	dataset 2012
+	1
+	...
+	389
+	dataset 2015
+	1
+	...
+	400
 
 Run `main.lua` to train the network:
 
-	$ ./main.lua kitti2012 fast -action train_tr
-	conv(in=1, out=64, k=3)
+	$ ./main.lua kitti slow -a train_tr
+	kitti slow -a train_tr 
+	conv(in=1, out=112, k=3)
 	cudnn.ReLU
-	conv(in=64, out=64, k=3)
+	conv(in=112, out=112, k=3)
 	cudnn.ReLU
-	conv(in=64, out=64, k=3)
+	conv(in=112, out=112, k=3)
 	cudnn.ReLU
-	conv(in=64, out=64, k=3)
-	nn.Normalize
-	nn.StereoJoin1
-	1       0.03037397274128        0.001   3398
-	2       0.026550362596851       0.001   6827
-	3       0.025564430719268       0.001   10312
-	4       0.025006808293515       0.001   13716
-	5       0.024617485892804       0.001   17035
-	6       0.024294071282911       0.001   20417
-	7       0.024049303830253       0.001   23794
-	8       0.023861376935358       0.001   27171
-	9       0.023688995216277       0.001   30588
-	10      0.023537286251383       0.001   33958
-	11      0.023441382191954       0.001   37409
-	12      0.022877658492854       0.0001  40914
-	13      0.022832725849046       0.0001  44352
-	14      0.022802679725601       0.0001  47730
+	conv(in=112, out=112, k=3)
+	cudnn.ReLU
+	nn.Reshape(128x224)
+	nn.Linear(224 -> 384)
+	cudnn.ReLU
+	nn.Linear(384 -> 384)
+	cudnn.ReLU
+	nn.Linear(384 -> 384)
+	cudnn.ReLU
+	nn.Linear(384 -> 384)
+	cudnn.ReLU
+	nn.Linear(384 -> 1)
+	cudnn.Sigmoid
+	...
 
-The script prints a description of the network and for each of the 14 training
-epochs the epoch number, loss on the training set, learning rate, and the time
-elapsed in seconds. The network is stored in the `net/` directory.
+The network is trained on a subset of all training examples with the remaining
+examples used for validation; to train on all examples replace use
+
+	$ ./main.lua kitti slow -a train_all
+
+In the previous command, the KITTI 2012 data set is used. If you wish to train
+on the KITTI 2015 or the Middlebury data sets use one of the following two commands:
+
+	$ ./main.lua kitti2015 slow -a train_tr
+	$ ./main.lua mb slow -a train_tr
+
+To train the fast architecture instead of the accurate architecture use:
+
+	$ ./main.lua kitti fast -a train_tr
+
+The network is stored in the `net/` directory.
 
 	$ ls net/
 	...
