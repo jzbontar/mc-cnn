@@ -10,5 +10,5 @@ module load opencv
 
 export TERM=xterm
 
-cd $HOME/devel/kitti.jrnl
+cd $HOME/devel/mc-cnn
 ./preprocess_mb.py $args

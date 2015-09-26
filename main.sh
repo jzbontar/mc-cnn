@@ -11,5 +11,5 @@ module load opencv
 
 export TERM=xterm
 
-cd $HOME/devel/kitti.jrnl
+cd $HOME/devel/mc-cnn
 ./main.lua $args

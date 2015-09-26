@@ -7,5 +7,5 @@
 module purge
 module load python3 
 
-cd $HOME/devel/kitti.jrnl
+cd $HOME/devel/mc-cnn
 python3 rgs_qsub.py $args

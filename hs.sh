@@ -10,5 +10,5 @@ module load cudnn
 module load opencv
 module load python3 
 
-cd $HOME/devel/kitti.jrnl
+cd $HOME/devel/mc-cnn
 ./hs.py $args

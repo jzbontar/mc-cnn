@@ -82,7 +82,7 @@ def start_job(ps, level):
     ps_str = ' '.join('-%s %r' % (name, vals[i]) for name, vals, i in ps)
     if action == 'test_te':
         ps_str += ' -use_cache'
-    cmd = "ssh %s 'cd devel/kitti.jrnl;TERM=xterm ./main.lua %s -a %s %s %s'" % (host, dataset, action, args, ps_str)
+    cmd = "ssh %s 'cd devel/mc-cnn;TERM=xterm ./main.lua %s -a %s %s %s'" % (host, dataset, action, args, ps_str)
     try:
         o = subprocess.check_output(cmd, shell=True)
         return float(o.split()[-1]), ps_str, ps, level
