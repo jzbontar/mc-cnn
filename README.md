@@ -32,9 +32,15 @@ The code is released under the BSD 2-Clause license.
 Download trained networks
 -------------------------
 
+- [KITTI 2012 fast](https://s3.amazonaws.com/mc-cnn/net_kitti_fast_-a_train_all.t7)
+- [KITTI 2012 accurate](https://s3.amazonaws.com/mc-cnn/net_kitti_slow_-a_train_all.t7)
+- [KITTI 2015 fast](https://s3.amazonaws.com/mc-cnn/net_kitti2015_fast_-a_train_all.t7)
+- [KITTI 2015 accurate](https://s3.amazonaws.com/mc-cnn/net_kitti2015_slow_-a_train_all.t7)
+- [Middlebury fast](https://s3.amazonaws.com/mc-cnn/net_mb_fast_-a_train_all.t7)
+- [Middlebury accurate](https://s3.amazonaws.com/mc-cnn/net_mb_slow_-a_train_all.t7)
 
-Computing the Matching Cost
----------------------------
+Compute the Matching Cost
+-------------------------
 
 Install [Torch](http://torch.ch/), [OpenCV 2.4](http://opencv.org/), and
 [png++](http://www.nongnu.org/pngpp/).
@@ -98,7 +104,7 @@ The resulting disparity maps should look like this:
 - `right.png`  
   <img src="samples/output/right_cnn.png" style="width: 25%;"/>
 
-### Loading the Output Binary Files ###
+### Load the Output Binary Files ###
 
 You load the binary files by memory mapping them.  We include examples of
 memory mapping for some of the more popular programming languages.
@@ -149,8 +155,8 @@ memory mapping for some of the more popular programming languages.
 			return 0;
 		}
 
-Training
---------
+Train
+-----
 
 This section explains how to train the convolutional neural network on the
 KITTI and Middlebury data sets.
