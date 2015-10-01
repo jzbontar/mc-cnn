@@ -1013,6 +1013,13 @@ function stereo_predict(x_batch, id)
             end
             vol:resize(1, disp_max, x_batch:size(3), x_batch:size(4))
             vol:copy(out:transpose(3, 4):transpose(2, 3)):div(4)
+
+--            local out = torch.CudaTensor(4, vol:size(2), vol:size(3), vol:size(4))
+--            out:zero()
+--            adcensus.sgm3(x_batch[1], x_batch[2], vol, out, opt.pi1, opt.pi2, opt.tau_so,
+--               opt.alpha1, opt.sgm_q1, opt.sgm_q2, direction)
+--            vol:mean(out, 1)
+--            vol = vol:transpose(3, 4):transpose(2, 3):clone()
          end
          collectgarbage()
       end
@@ -1237,7 +1244,6 @@ for _, i in ipairs(examples) do
          image.save(('tmp/%s_%s_gt.png'):format(dataset, id), img_gt[1])
          image.save(('tmp/%s_%s_%s_pred.png'):format(dataset, arch, id), img_pred[1])
          image.save(('tmp/%s_%s_%s_err.png'):format(dataset, arch, id), img_err[1])
-
 
 --         adcensus.grey2jet(pred:double():add(1)[{1,1}]:div(disp_max):double(), img_pred)
 --         if x0:size(2) == 1 then

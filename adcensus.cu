@@ -20,12 +20,12 @@ extern "C" {
 
 THCState* getCutorchState(lua_State* L)
 {
-    lua_getglobal(L, "cutorch");
-    lua_getfield(L, -1, "getState");
-    lua_call(L, 0, 1);
-    THCState *state = (THCState*) lua_touserdata(L, -1);
-    lua_pop(L, 2);
-    return state;
+	lua_getglobal(L, "cutorch");
+	lua_getfield(L, -1, "getState");
+	lua_call(L, 0, 1);
+	THCState *state = (THCState*) lua_touserdata(L, -1);
+	lua_pop(L, 2);
+	return state;
 }
 
 void checkCudaError(lua_State *L) {
@@ -61,56 +61,56 @@ __device__ void sort(float *x, int n)
 
 __global__ void ad(float *x0, float *x1, float *output, int size, int size2, int size3, int direction)
 {
-    int id = blockIdx.x * blockDim.x + threadIdx.x;
+	int id = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (id < size) {
-        int d = id;
-        int x = d % size3;
-        d /= size3;
-        int y = d % size2;
-        d /= size2;
-        d *= direction;
+	if (id < size) {
+		int d = id;
+		int x = d % size3;
+		d /= size3;
+		int y = d % size2;
+		d /= size2;
+		d *= direction;
 
-        float dist;
-        if (0 <= x + d && x + d < size3) {
-            int cnt = 0;
-            dist = 0;
-            for (int yy = y - 4; yy <= y + 4; yy++) {
-                for (int xx = x - 4; xx <= x + 4; xx++) {
-                    if (0 <= xx && xx < size3 && 0 <= xx + d && xx + d < size3 && 0 <= yy && yy < size2) {
-                        int ind = yy * size3 + xx;
-                        dist += abs(x0[ind] - x1[ind + d]);
-                        cnt++;
-                    }
-                }
-            }
-            dist /= cnt;
-        } else {
-            dist = CUDART_NAN;
-        }
-        output[id] = dist;
-    }
+		float dist;
+		if (0 <= x + d && x + d < size3) {
+			int cnt = 0;
+			dist = 0;
+			for (int yy = y - 4; yy <= y + 4; yy++) {
+				for (int xx = x - 4; xx <= x + 4; xx++) {
+					if (0 <= xx && xx < size3 && 0 <= xx + d && xx + d < size3 && 0 <= yy && yy < size2) {
+						int ind = yy * size3 + xx;
+						dist += abs(x0[ind] - x1[ind + d]);
+						cnt++;
+					}
+				}
+			}
+			dist /= cnt;
+		} else {
+			dist = CUDART_NAN;
+		}
+		output[id] = dist;
+	}
 }
 
 int ad(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
-    THCudaTensor *x0 = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
-    THCudaTensor *x1 = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
-    THCudaTensor *out = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
-    int direction = luaL_checkinteger(L, 4);
-    assert(direction == -1 || direction == 1);
+	THCState *state = getCutorchState(L);
+	THCudaTensor *x0 = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
+	THCudaTensor *x1 = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
+	THCudaTensor *out = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
+	int direction = luaL_checkinteger(L, 4);
+	assert(direction == -1 || direction == 1);
 
-    ad<<<(THCudaTensor_nElement(state, out) - 1) / TB + 1, TB>>>(
-        THCudaTensor_data(state, x0),
-        THCudaTensor_data(state, x1),
-        THCudaTensor_data(state, out),
-        THCudaTensor_nElement(state, out),
-        THCudaTensor_size(state, out, 2),
-        THCudaTensor_size(state, out, 3),
-        direction);
-    checkCudaError(L);
-    return 0;
+	ad<<<(THCudaTensor_nElement(state, out) - 1) / TB + 1, TB>>>(
+		THCudaTensor_data(state, x0),
+		THCudaTensor_data(state, x1),
+		THCudaTensor_data(state, out),
+		THCudaTensor_nElement(state, out),
+		THCudaTensor_size(state, out, 2),
+		THCudaTensor_size(state, out, 3),
+		direction);
+	checkCudaError(L);
+	return 0;
 }
 
 
@@ -154,7 +154,7 @@ __global__ void census(float *x0, float *x1, float *output, int size, int num_ch
 
 int census(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
+	THCState *state = getCutorchState(L);
 	THCudaTensor *x0 = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 	THCudaTensor *x1 = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
 	THCudaTensor *out = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
@@ -263,18 +263,18 @@ __global__ void spatial_argmin(float *input, float *output, int size, int size1,
 
 int spatial_argmin(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
-    THCudaTensor *input = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
-    THCudaTensor *output = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
+	THCState *state = getCutorchState(L);
+	THCudaTensor *input = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
+	THCudaTensor *output = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
 
-    spatial_argmin<<<(THCudaTensor_nElement(state, output) - 1) / TB + 1, TB>>>(
-        THCudaTensor_data(state, input),
-        THCudaTensor_data(state, output),
-        THCudaTensor_nElement(state, output),
-        THCudaTensor_size(state, input, 1),
-        THCudaTensor_size(state, input, 2) * THCudaTensor_size(state, output, 3));
-    checkCudaError(L);
-    return 0;
+	spatial_argmin<<<(THCudaTensor_nElement(state, output) - 1) / TB + 1, TB>>>(
+		THCudaTensor_data(state, input),
+		THCudaTensor_data(state, output),
+		THCudaTensor_nElement(state, output),
+		THCudaTensor_size(state, input, 1),
+		THCudaTensor_size(state, input, 2) * THCudaTensor_size(state, output, 3));
+	checkCudaError(L);
+	return 0;
 }
 
 __global__ void cross(float *x0, float *out, int size, int dim2, int dim3, int L1, float tau1)
@@ -323,7 +323,7 @@ __global__ void cross(float *x0, float *out, int size, int dim2, int dim3, int L
 
 int cross(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
+	THCState *state = getCutorchState(L);
 	THCudaTensor *x0 = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 	THCudaTensor *out = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
 	int L1 = luaL_checkinteger(L, 3);
@@ -378,7 +378,7 @@ __global__ void cbca(float *x0c, float *x1c, float *vol, float *out, int size, i
 
 int cbca(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
+	THCState *state = getCutorchState(L);
 	THCudaTensor *x0c = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 	THCudaTensor *x1c = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
 	THCudaTensor *vol_in = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
@@ -443,7 +443,7 @@ __global__ void sgm(float *x0, float *x1, float *vol, float *tmp, float *out, in
 			int ind = (d * dim2 + y) * dim3 + x;
 
 			if (x + d * direction < 0 ||
-			    x + d * direction >= dim3 || 
+				x + d * direction >= dim3 || 
 				y - dy < 0 || 
 				y - dy >= dim2 || 
 				x + d * direction - dx < 0 || 
@@ -496,7 +496,7 @@ __global__ void sgm(float *x0, float *x1, float *vol, float *tmp, float *out, in
 
 int sgm(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
+	THCState *state = getCutorchState(L);
 	THCudaTensor *x0 = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 	THCudaTensor *x1 = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
 	THCudaTensor *vol = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
@@ -529,111 +529,111 @@ int sgm(lua_State *L)
 }
 
 #define INDEX(dim0, dim1, dim2, dim3) \
-    assert((dim1) >= 0 && (dim1) < size1 && (dim2) >= 0 && (dim2) < size2 && (dim3) >= 0 && (dim3) < size3), \
-    ((((dim0) * size1 + (dim1)) * size2 + (dim2)) * size3 + dim3)
+	assert((dim1) >= 0 && (dim1) < size1 && (dim2) >= 0 && (dim2) < size2 && (dim3) >= 0 && (dim3) < size3), \
+	((((dim0) * size1 + (dim1)) * size2 + (dim2)) * size3 + dim3)
 
 template <int sgm_direction>
 __global__ void sgm2(float *x0, float *x1, float *input, float *output, float *tmp, float pi1, float pi2, float tau_so, float alpha1, float sgm_q1, float sgm_q2, int direction, int size1, int size2, int size3, int step)
 {
-    int x, y, dx, dy;
-    int d = threadIdx.x;
+	int x, y, dx, dy;
+	int d = threadIdx.x;
 
-    if (sgm_direction == 0) {
-        /* right */
-        x = step;
-        y = blockIdx.x;
-        dx = 1;
-        dy = 0;
-    } else if (sgm_direction == 1) {
-        /* left */
-        x = size2 - 1 - step;
-        y = blockIdx.x;
-        dx = -1;
-        dy = 0;
-    } else if (sgm_direction == 2) {
-        /* down */
-        x = blockIdx.x;
-        y = step;
-        dx = 0;
-        dy = 1;
-    } else if (sgm_direction == 3) {
-        /* up */
-        x = blockIdx.x;
-        y = size1 - 1 - step;
-        dx = 0;
-        dy = -1;
-    }
+	if (sgm_direction == 0) {
+		/* right */
+		x = step;
+		y = blockIdx.x;
+		dx = 1;
+		dy = 0;
+	} else if (sgm_direction == 1) {
+		/* left */
+		x = size2 - 1 - step;
+		y = blockIdx.x;
+		dx = -1;
+		dy = 0;
+	} else if (sgm_direction == 2) {
+		/* down */
+		x = blockIdx.x;
+		y = step;
+		dx = 0;
+		dy = 1;
+	} else if (sgm_direction == 3) {
+		/* up */
+		x = blockIdx.x;
+		y = size1 - 1 - step;
+		dx = 0;
+		dy = -1;
+	}
 
-    if (y - dy < 0 || y - dy >= size1 || x - dx < 0 || x - dx >= size2) {
+	if (y - dy < 0 || y - dy >= size1 || x - dx < 0 || x - dx >= size2) {
 		float val = input[INDEX(0, y, x, d)];
 		output[INDEX(0, y, x, d)] += val;
 		tmp[d * size2 + blockIdx.x] = val;
-        return;
-    }
+		return;
+	}
 
-    __shared__ float output_s[400], output_min[400];
+	__shared__ float output_s[400], output_min[400];
 
-    output_s[d] = output_min[d] = tmp[d * size2 + blockIdx.x];
-    __syncthreads();
+	output_s[d] = output_min[d] = tmp[d * size2 + blockIdx.x];
+	__syncthreads();
 
-    for (int i = 256; i > 0; i /= 2) {
-        if (d < i && d + i < size3 && output_min[d + i] < output_min[d]) {
-            output_min[d] = output_min[d + i];
-        }
-        __syncthreads();
-    }
+	for (int i = 256; i > 0; i /= 2) {
+		if (d < i && d + i < size3 && output_min[d + i] < output_min[d]) {
+			output_min[d] = output_min[d + i];
+		}
+		__syncthreads();
+	}
 
-    int ind2 = y * size2 + x;
-    float D1 = COLOR_DIFF(x0, ind2, ind2 - dy * size2 - dx);
-    float D2;
+	int ind2 = y * size2 + x;
+	float D1 = COLOR_DIFF(x0, ind2, ind2 - dy * size2 - dx);
+	float D2;
 	int xx = x + d * direction;
 	if (xx < 0 || xx >= size2 || xx - dx < 0 || xx - dx >= size2) {
 		D2 = 10;
 	} else {
 		D2 = COLOR_DIFF(x1, ind2 + d * direction, ind2 + d * direction - dy * size2 - dx);
 	}
-    float P1, P2;
-    if (D1 < tau_so && D2 < tau_so) {
-        P1 = pi1;
-        P2 = pi2;
-    } else if (D1 > tau_so && D2 > tau_so) {
-        P1 = pi1 / (sgm_q1 * sgm_q2);
-        P2 = pi2 / (sgm_q1 * sgm_q2);
-    } else {
-        P1 = pi1 / sgm_q1;
-        P2 = pi2 / sgm_q1;
-    }
+	float P1, P2;
+	if (D1 < tau_so && D2 < tau_so) {
+		P1 = pi1;
+		P2 = pi2;
+	} else if (D1 > tau_so && D2 > tau_so) {
+		P1 = pi1 / (sgm_q1 * sgm_q2);
+		P2 = pi2 / (sgm_q1 * sgm_q2);
+	} else {
+		P1 = pi1 / sgm_q1;
+		P2 = pi2 / sgm_q1;
+	}
 
-    float cost = min(output_s[d], output_min[0] + P2);
-    if (d - 1 >= 0) {
-        cost = min(cost, output_s[d - 1] + (sgm_direction == 2 ? P1 / alpha1 : P1));
-    }
-    if (d + 1 < size3) {
-        cost = min(cost, output_s[d + 1] + (sgm_direction == 3 ? P1 / alpha1 : P1));
-    }
+	float cost = min(output_s[d], output_min[0] + P2);
+	if (d - 1 >= 0) {
+		cost = min(cost, output_s[d - 1] + (sgm_direction == 2 ? P1 / alpha1 : P1));
+	}
+	if (d + 1 < size3) {
+		cost = min(cost, output_s[d + 1] + (sgm_direction == 3 ? P1 / alpha1 : P1));
+	}
 
-    float val = input[INDEX(0, y, x, d)] + cost - output_min[0];
-    output[INDEX(0, y, x, d)] += val;
+	float val = input[INDEX(0, y, x, d)] + cost - output_min[0];
+	output[INDEX(0, y, x, d)] += val;
 	tmp[d * size2 + blockIdx.x] = val;
 }
 
 int sgm2(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
-    THCudaTensor *x0 = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
-    THCudaTensor *x1 = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
-    THCudaTensor *input = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
-    THCudaTensor *output = (THCudaTensor*)luaT_checkudata(L, 4, "torch.CudaTensor");
-    THCudaTensor *tmp = (THCudaTensor*)luaT_checkudata(L, 5, "torch.CudaTensor");
-    float pi1 = luaL_checknumber(L, 6);
-    float pi2 = luaL_checknumber(L, 7);
-    float tau_so = luaL_checknumber(L, 8);
-    float alpha1 = luaL_checknumber(L, 9);
-    float sgm_q1 = luaL_checknumber(L, 10);
-    float sgm_q2 = luaL_checknumber(L, 11);
-    int direction = luaL_checknumber(L, 12);
-    int size1 = THCudaTensor_size(state, output, 1) * THCudaTensor_size(state, output, 3);
-    int size2 = THCudaTensor_size(state, output, 2) * THCudaTensor_size(state, output, 3);
+	THCState *state = getCutorchState(L);
+	THCudaTensor *x0 = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
+	THCudaTensor *x1 = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
+	THCudaTensor *input = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
+	THCudaTensor *output = (THCudaTensor*)luaT_checkudata(L, 4, "torch.CudaTensor");
+	THCudaTensor *tmp = (THCudaTensor*)luaT_checkudata(L, 5, "torch.CudaTensor");
+	float pi1 = luaL_checknumber(L, 6);
+	float pi2 = luaL_checknumber(L, 7);
+	float tau_so = luaL_checknumber(L, 8);
+	float alpha1 = luaL_checknumber(L, 9);
+	float sgm_q1 = luaL_checknumber(L, 10);
+	float sgm_q2 = luaL_checknumber(L, 11);
+	int direction = luaL_checknumber(L, 12);
+	int size1 = THCudaTensor_size(state, output, 1) * THCudaTensor_size(state, output, 3);
+	int size2 = THCudaTensor_size(state, output, 2) * THCudaTensor_size(state, output, 3);
 	int disp_max = THCudaTensor_size(state, output, 3);
 
 	for (int step = 0; step < THCudaTensor_size(state, input, 2); step++) {
@@ -692,8 +692,163 @@ int sgm2(lua_State *L)
 			step);
 	}
 
-    checkCudaError(L);
-    return 0;
+	checkCudaError(L);
+	return 0;
+}
+
+template <int sgm_direction>
+__global__ void sgm3(float *x0, float *x1, float *input, float *output, float pi1, float pi2, float tau_so, float alpha1, float sgm_q1, float sgm_q2, int direction, int size1, int size2, int size3, int step)
+{
+	int x, y, dx, dy;
+	int d = threadIdx.x;
+
+	if (sgm_direction == 0) {
+		/* right */
+		x = step;
+		y = blockIdx.x;
+		dx = 1;
+		dy = 0;
+	} else if (sgm_direction == 1) {
+		/* left */
+		x = size2 - 1 - step;
+		y = blockIdx.x;
+		dx = -1;
+		dy = 0;
+	} else if (sgm_direction == 2) {
+		/* down */
+		x = blockIdx.x;
+		y = step;
+		dx = 0;
+		dy = 1;
+	} else if (sgm_direction == 3) {
+		/* up */
+		x = blockIdx.x;
+		y = size1 - 1 - step;
+		dx = 0;
+		dy = -1;
+	}
+
+	if (y - dy < 0 || y - dy >= size1 || x - dx < 0 || x - dx >= size2) {
+		output[INDEX(sgm_direction, y, x, d)] = input[INDEX(0, y, x, d)];
+		return;
+	}
+
+	__shared__ float output_s[400], output_min[400];
+
+	output_s[d] = output_min[d] = output[INDEX(sgm_direction, y - dy, x - dx, d)];
+	__syncthreads();
+
+	for (int i = 256; i > 0; i /= 2) {
+		if (d < i && d + i < size3 && output_min[d + i] < output_min[d]) {
+			output_min[d] = output_min[d + i];
+		}
+		__syncthreads();
+	}
+
+	int ind2 = y * size2 + x;
+	float D1 = COLOR_DIFF(x0, ind2, ind2 - dy * size2 - dx);
+	float D2;
+	int xx = x + d * direction;
+	if (xx < 0 || xx >= size2 || xx - dx < 0 || xx - dx >= size2) {
+		D2 = 10;
+	} else {
+		D2 = COLOR_DIFF(x1, ind2 + d * direction, ind2 + d * direction - dy * size2 - dx);
+	}
+	float P1, P2;
+	if (D1 < tau_so && D2 < tau_so) {
+		P1 = pi1;
+		P2 = pi2;
+	} else if (D1 > tau_so && D2 > tau_so) {
+		P1 = pi1 / (sgm_q1 * sgm_q2);
+		P2 = pi2 / (sgm_q1 * sgm_q2);
+	} else {
+		P1 = pi1 / sgm_q1;
+		P2 = pi2 / sgm_q1;
+	}
+
+	float cost = min(output_s[d], output_min[0] + P2);
+	if (d - 1 >= 0) {
+		cost = min(cost, output_s[d - 1] + (sgm_direction == 2 ? P1 / alpha1 : P1));
+	}
+	if (d + 1 < size3) {
+		cost = min(cost, output_s[d + 1] + (sgm_direction == 3 ? P1 / alpha1 : P1));
+	}
+
+	output[INDEX(sgm_direction, y, x, d)] = input[INDEX(0, y, x, d)] + cost - output_min[0];
+}
+
+int sgm3(lua_State *L)
+{
+	THCState *state = getCutorchState(L);
+	THCudaTensor *x0 = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
+	THCudaTensor *x1 = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
+	THCudaTensor *input = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
+	THCudaTensor *output = (THCudaTensor*)luaT_checkudata(L, 4, "torch.CudaTensor");
+	float pi1 = luaL_checknumber(L, 5);
+	float pi2 = luaL_checknumber(L, 6);
+	float tau_so = luaL_checknumber(L, 7);
+	float alpha1 = luaL_checknumber(L, 8);
+	float sgm_q1 = luaL_checknumber(L, 9);
+	float sgm_q2 = luaL_checknumber(L, 10);
+	int direction = luaL_checknumber(L, 11);
+	int size1 = THCudaTensor_size(state, output, 1) * THCudaTensor_size(state, output, 3);
+	int size2 = THCudaTensor_size(state, output, 2) * THCudaTensor_size(state, output, 3);
+	int disp_max = THCudaTensor_size(state, output, 3);
+
+	for (int step = 0; step < THCudaTensor_size(state, input, 2); step++) {
+		sgm3<0><<<(size1 - 1) / disp_max + 1, disp_max>>>(
+			THCudaTensor_data(state, x0),
+			THCudaTensor_data(state, x1),
+			THCudaTensor_data(state, input),
+			THCudaTensor_data(state, output),
+			pi1, pi2, tau_so, alpha1, sgm_q1, sgm_q2, direction,
+			THCudaTensor_size(state, input, 1),
+			THCudaTensor_size(state, input, 2),
+			THCudaTensor_size(state, input, 3),
+			step);
+	}
+
+	for (int step = 0; step < THCudaTensor_size(state, input, 2); step++) {
+		sgm3<1><<<(size1 - 1) / disp_max + 1, disp_max>>>(
+			THCudaTensor_data(state, x0),
+			THCudaTensor_data(state, x1),
+			THCudaTensor_data(state, input),
+			THCudaTensor_data(state, output),
+			pi1, pi2, tau_so, alpha1, sgm_q1, sgm_q2, direction,
+			THCudaTensor_size(state, input, 1),
+			THCudaTensor_size(state, input, 2),
+			THCudaTensor_size(state, input, 3),
+			step);
+	}
+
+	for (int step = 0; step < THCudaTensor_size(state, input, 1); step++) {
+		sgm3<2><<<(size2 - 1) / disp_max + 1, disp_max>>>(
+			THCudaTensor_data(state, x0),
+			THCudaTensor_data(state, x1),
+			THCudaTensor_data(state, input),
+			THCudaTensor_data(state, output),
+			pi1, pi2, tau_so, alpha1, sgm_q1, sgm_q2, direction,
+			THCudaTensor_size(state, input, 1),
+			THCudaTensor_size(state, input, 2),
+			THCudaTensor_size(state, input, 3),
+			step);
+	}
+
+	for (int step = 0; step < THCudaTensor_size(state, input, 1); step++) {
+		sgm3<3><<<(size2 - 1) / disp_max + 1, disp_max>>>(
+			THCudaTensor_data(state, x0),
+			THCudaTensor_data(state, x1),
+			THCudaTensor_data(state, input),
+			THCudaTensor_data(state, output),
+			pi1, pi2, tau_so, alpha1, sgm_q1, sgm_q2, direction,
+			THCudaTensor_size(state, input, 1),
+			THCudaTensor_size(state, input, 2),
+			THCudaTensor_size(state, input, 3),
+			step);
+	}
+
+	checkCudaError(L);
+	return 0;
 }
 
 __global__ void fliplr(float *in, float *out, int size, int dim3)
@@ -707,7 +862,7 @@ __global__ void fliplr(float *in, float *out, int size, int dim3)
 
 int fliplr(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
+	THCState *state = getCutorchState(L);
 	THCudaTensor *in = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 	THCudaTensor *out = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
 
@@ -745,7 +900,7 @@ __global__ void outlier_detection(float *d0, float *d1, float *outlier, int size
 
 int outlier_detection(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
+	THCState *state = getCutorchState(L);
 	THCudaTensor *d0 = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 	THCudaTensor *d1 = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
 	THCudaTensor *outlier = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
@@ -846,21 +1001,21 @@ int iterative_region_voting(lua_State *L)
 __global__ void interpolate_mismatch(float *d0, float *outlier, float *out, int size, int dim2, int dim3)
 {
 	const float dir[] = {
-		0   ,  1,
+		0	,  1,
 		-0.5,  1,
-		-1  ,  1,
-		-1  ,  0.5,
-		-1  ,  0,
-		-1  , -0.5,
-		-1  , -1,
+		-1	,  1,
+		-1	,  0.5,
+		-1	,  0,
+		-1	, -0.5,
+		-1	, -1,
 		-0.5, -1,
-		0   , -1,
+		0	, -1,
 		0.5 , -1,
-		1   , -1,
-		1   , -0.5,
-		1   ,  0,
-		1   ,  0.5,
-		1   ,  1,
+		1	, -1,
+		1	, -0.5,
+		1	,  0,
+		1	,  0.5,
+		1	,  1,
 		0.5 ,  1
 	};
 
@@ -904,7 +1059,7 @@ __global__ void interpolate_mismatch(float *d0, float *outlier, float *out, int 
 
 int interpolate_mismatch(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
+	THCState *state = getCutorchState(L);
 	THCudaTensor *d0 = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 	THCudaTensor *outlier = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
 	THCudaTensor *out = new_tensor_like(state, d0);
@@ -951,7 +1106,7 @@ __global__ void interpolate_occlusion(float *d0, float *outlier, float *out, int
 
 int interpolate_occlusion(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
+	THCState *state = getCutorchState(L);
 	THCudaTensor *d0 = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 	THCudaTensor *outlier = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
 	THCudaTensor *out = new_tensor_like(state, d0);
@@ -1065,7 +1220,7 @@ __global__ void subpixel_enchancement(float *d0, float *c2, float *out, int size
 }
 
 int subpixel_enchancement(lua_State *L) {
-    THCState *state = getCutorchState(L);
+	THCState *state = getCutorchState(L);
 	THCudaTensor *d0 = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 	THCudaTensor *c2 = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
 	int disp_max = luaL_checkinteger(L, 3);
@@ -1106,7 +1261,7 @@ __global__ void mean2d(float *img, float *kernel, float *out, int size, int kern
 }
 
 int mean2d(lua_State *L) {
-    THCState *state = getCutorchState(L);
+	THCState *state = getCutorchState(L);
 	THCudaTensor *img = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 	THCudaTensor *kernel = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
 	float alpha2 = luaL_checknumber(L, 3);
@@ -1128,36 +1283,36 @@ int mean2d(lua_State *L) {
 
 __global__ void Normalize_get_norm_(float *input, float *norm, int size1, int size23, int size023)
 {
-    int id = blockIdx.x * blockDim.x + threadIdx.x;
-    if (id < size023) {
-        int dim23 = id % size23;
-        int dim0 = id / size23;
+	int id = blockIdx.x * blockDim.x + threadIdx.x;
+	if (id < size023) {
+		int dim23 = id % size23;
+		int dim0 = id / size23;
 
-        float sum = 0.0;
-        for (int dim1 = 0; dim1 < size1; dim1++) {
-            float x = input[(dim0 * size1 + dim1) * size23 + dim23];
-            sum += x * x;
-        }
-        norm[dim0 * size23 + dim23] = sum + 1e-5;
-    }
+		float sum = 0.0;
+		for (int dim1 = 0; dim1 < size1; dim1++) {
+			float x = input[(dim0 * size1 + dim1) * size23 + dim23];
+			sum += x * x;
+		}
+		norm[dim0 * size23 + dim23] = sum + 1e-5;
+	}
 }
 
 __global__ void Normalize_forward_(float *input, float *norm, float *output, int size23, int size123, int size0123)
 {
-    int id = blockIdx.x * blockDim.x + threadIdx.x;
-    if (id < size0123) { 
-        int dim23 = id % size23;
-        int dim0 = (id / size123);
-        output[id] = input[id] / sqrtf(norm[dim0 * size23 + dim23]);
-    }
+	int id = blockIdx.x * blockDim.x + threadIdx.x;
+	if (id < size0123) { 
+		int dim23 = id % size23;
+		int dim0 = (id / size123);
+		output[id] = input[id] / sqrtf(norm[dim0 * size23 + dim23]);
+	}
 }
 
 int Normalize_forward(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
-    THCudaTensor *input = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
-    THCudaTensor *norm = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
-    THCudaTensor *output = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
+	THCState *state = getCutorchState(L);
+	THCudaTensor *input = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
+	THCudaTensor *norm = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
+	THCudaTensor *output = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
 
 	Normalize_get_norm_<<<(THCudaTensor_nElement(state, norm) - 1) / TB + 1, TB>>>(
 		THCudaTensor_data(state, input),
@@ -1173,41 +1328,41 @@ int Normalize_forward(lua_State *L)
 		THCudaTensor_size(state, input, 2) * THCudaTensor_size(state, input, 3),
 		THCudaTensor_size(state, input, 1) * THCudaTensor_size(state, input, 2) * THCudaTensor_size(state, input, 3),
 		THCudaTensor_nElement(state, output));
-    checkCudaError(L);
-    return 0;
+	checkCudaError(L);
+	return 0;
 }
 
 __global__ void Normalize_backward_input_(float *grad_output, float *input, float *norm, float *grad_input, int size1, int size23, int size0123)
 {
-    int id = blockIdx.x * blockDim.x + threadIdx.x;
-    if (id < size0123) {
-        int dim0 = id;
-        int dim23 = dim0 % size23;
-        dim0 /= size23;
-        int dim1 = dim0 % size1;
-        dim0 /= size1;
+	int id = blockIdx.x * blockDim.x + threadIdx.x;
+	if (id < size0123) {
+		int dim0 = id;
+		int dim23 = dim0 % size23;
+		dim0 /= size23;
+		int dim1 = dim0 % size1;
+		dim0 /= size1;
 
-        float denom = powf(norm[dim0 * size23 + dim23], 1.5);
-        float deriv = (norm[dim0 * size23 + dim23] - input[id] * input[id]) / denom * grad_output[id];
+		float denom = powf(norm[dim0 * size23 + dim23], 1.5);
+		float deriv = (norm[dim0 * size23 + dim23] - input[id] * input[id]) / denom * grad_output[id];
 
-        float sum = 0;
-        for (int dim1_ = 0; dim1_ < size1; dim1_++) {
-            if (dim1_ != dim1) {
-                int ind = (dim0 * size1 + dim1_) * size23 + dim23;
-                sum += input[ind] * grad_output[ind];
-            }
-        }
-        grad_input[id] = deriv - sum * input[id] / denom;
-    }
+		float sum = 0;
+		for (int dim1_ = 0; dim1_ < size1; dim1_++) {
+			if (dim1_ != dim1) {
+				int ind = (dim0 * size1 + dim1_) * size23 + dim23;
+				sum += input[ind] * grad_output[ind];
+			}
+		}
+		grad_input[id] = deriv - sum * input[id] / denom;
+	}
 }
 
 int Normalize_backward_input(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
-    THCudaTensor *grad_output = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
-    THCudaTensor *input = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
-    THCudaTensor *norm = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
-    THCudaTensor *grad_input = (THCudaTensor*)luaT_checkudata(L, 4, "torch.CudaTensor");
+	THCState *state = getCutorchState(L);
+	THCudaTensor *grad_output = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
+	THCudaTensor *input = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
+	THCudaTensor *norm = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
+	THCudaTensor *grad_input = (THCudaTensor*)luaT_checkudata(L, 4, "torch.CudaTensor");
 
 	Normalize_backward_input_<<<(THCudaTensor_nElement(state, input) - 1) / TB + 1, TB>>>(
 		THCudaTensor_data(state, grad_output),
@@ -1224,9 +1379,9 @@ int Normalize_backward_input(lua_State *L)
 struct Margin2_functor {
 	float margin;
 	__host__ Margin2_functor(float margin_) : margin(margin_) {};
-    __device__ float forward(float pos, float neg) {
+	__device__ float forward(float pos, float neg) {
 		return fmaxf(0, neg - pos + margin);
-    }
+	}
 	__device__ float backward(float pos, float neg, int which) {
 		float f = neg - pos + margin;
 		if (which == 0) {
@@ -1240,10 +1395,10 @@ struct Margin2_functor {
 struct Margin2_squared_functor {
 	float margin;
 	__host__ Margin2_squared_functor(float margin_) : margin(margin_) {};
-    __device__ float forward(float pos, float neg) {
+	__device__ float forward(float pos, float neg) {
 		float d = fmaxf(0, neg - pos + margin);
 		return d * d * 0.5;
-    }
+	}
 	__device__ float backward(float pos, float neg, int which) {
 		float f = neg - pos + margin;
 		if (which == 0) {
@@ -1269,10 +1424,10 @@ __global__ void Margin2_(float *input, float *tmp, float *gradInput, float margi
 
 int Margin2(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
-    THCudaTensor *input = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
-    THCudaTensor *tmp = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
-    THCudaTensor *gradInput = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
+	THCState *state = getCutorchState(L);
+	THCudaTensor *input = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
+	THCudaTensor *tmp = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
+	THCudaTensor *gradInput = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
 	float margin = luaL_checknumber(L, 4);
 	int pow = luaL_checkinteger(L, 5);
 
@@ -1324,10 +1479,10 @@ __global__ void StereoJoin_(float *input_L, float *input_R, float *output_L, flo
 int StereoJoin(lua_State *L)
 {
 	THCState *state = getCutorchState(L);
-    THCudaTensor *input_L = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
-    THCudaTensor *input_R = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
-    THCudaTensor *output_L = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
-    THCudaTensor *output_R = (THCudaTensor*)luaT_checkudata(L, 4, "torch.CudaTensor");
+	THCudaTensor *input_L = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
+	THCudaTensor *input_R = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
+	THCudaTensor *output_L = (THCudaTensor*)luaT_checkudata(L, 3, "torch.CudaTensor");
+	THCudaTensor *output_R = (THCudaTensor*)luaT_checkudata(L, 4, "torch.CudaTensor");
 	int size23 = THCudaTensor_size(state, output_L, 2) * THCudaTensor_size(state, output_L, 3);
 	StereoJoin_<<<(size23 - 1) / TB + 1, TB>>>(
 		THCudaTensor_data(state, input_L),
@@ -1399,7 +1554,7 @@ __global__ void bilateral_filter(float *img, float *out, int size, int dim2, int
 }
 
 int bilateral_filter(lua_State *L) {
-    THCState *state = getCutorchState(L);
+	THCState *state = getCutorchState(L);
 	THCudaTensor *img = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 	float sigma1 = luaL_checknumber(L, 2);
 	float sigma2 = luaL_checknumber(L, 3);
@@ -1439,7 +1594,7 @@ __global__ void median2d(float *img, float *out, int size, int dim2, int dim3, i
 }
 
 int median2d(lua_State *L) {
-    THCState *state = getCutorchState(L);
+	THCState *state = getCutorchState(L);
 	THCudaTensor *img = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 	int kernel_size = luaL_checkinteger(L, 2);
 	THCudaTensor *out = new_tensor_like(state, img);
@@ -1518,15 +1673,15 @@ int readPNG16(lua_State *L)
 	const char* fname = luaL_checkstring(L, 2);
 
 	float *img = THFloatTensor_data(img_);		
-    png::image<png::gray_pixel_16> image(fname);
-    int width = image.get_width();
-    int height = image.get_height();
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            uint16_t val = image.get_pixel(j, i);
-            img[i * width + j] = val == 0 ? 0.0 : ((float)val)/256.0;
-        }
-    }
+	png::image<png::gray_pixel_16> image(fname);
+	int width = image.get_width();
+	int height = image.get_height();
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			uint16_t val = image.get_pixel(j, i);
+			img[i * width + j] = val == 0 ? 0.0 : ((float)val)/256.0;
+		}
+	}
 	return 0;
 }
 
@@ -1538,14 +1693,14 @@ int writePNG16(lua_State *L)
 	const char* fname = luaL_checkstring(L, 4);
 
 	float *img = THFloatTensor_data(img_);		
-    png::image<png::gray_pixel_16> image(width, height);
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
+	png::image<png::gray_pixel_16> image(width, height);
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
 			float val = img[i * width + j];			
-            image.set_pixel(j, i, (uint16_t)(val < 1e-5 ? 0 : val * 256));
-        }
-    }
-    image.write(fname);
+			image.set_pixel(j, i, (uint16_t)(val < 1e-5 ? 0 : val * 256));
+		}
+	}
+	image.write(fname);
 	return 0;
 }
 
@@ -1578,15 +1733,15 @@ __global__ void remove_nonvisible(float *y, int size, int size3)
 
 int remove_nonvisible(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
-    THCudaTensor *y = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
+	THCState *state = getCutorchState(L);
+	THCudaTensor *y = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 
-    remove_nonvisible<<<(THCudaTensor_nElement(state, y) - 1) / TB + 1, TB>>>(
-        THCudaTensor_data(state, y),
-        THCudaTensor_nElement(state, y),
-        THCudaTensor_size(state, y, 3));
-    checkCudaError(L);
-    return 0;
+	remove_nonvisible<<<(THCudaTensor_nElement(state, y) - 1) / TB + 1, TB>>>(
+		THCudaTensor_data(state, y),
+		THCudaTensor_nElement(state, y),
+		THCudaTensor_size(state, y, 3));
+	checkCudaError(L);
+	return 0;
 }
 
 __global__ void remove_occluded(float *y, int size, int size3)
@@ -1605,15 +1760,15 @@ __global__ void remove_occluded(float *y, int size, int size3)
 
 int remove_occluded(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
-    THCudaTensor *y = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
+	THCState *state = getCutorchState(L);
+	THCudaTensor *y = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 
-    remove_occluded<<<(THCudaTensor_nElement(state, y) - 1) / TB + 1, TB>>>(
-        THCudaTensor_data(state, y), 
-        THCudaTensor_nElement(state, y),
-        THCudaTensor_size(state, y, 3));
-    checkCudaError(L);
-    return 0;
+	remove_occluded<<<(THCudaTensor_nElement(state, y) - 1) / TB + 1, TB>>>(
+		THCudaTensor_data(state, y), 
+		THCudaTensor_nElement(state, y),
+		THCudaTensor_size(state, y, 3));
+	checkCudaError(L);
+	return 0;
 }
 
 __global__ void remove_white(float *x, float *y, int size)
@@ -1628,16 +1783,16 @@ __global__ void remove_white(float *x, float *y, int size)
 
 int remove_white(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
-    THCudaTensor *x = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
-    THCudaTensor *y = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
+	THCState *state = getCutorchState(L);
+	THCudaTensor *x = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
+	THCudaTensor *y = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
 
-    remove_white<<<(THCudaTensor_nElement(state, y) - 1) / TB + 1, TB>>>(
-        THCudaTensor_data(state, x),
-        THCudaTensor_data(state, y),
-        THCudaTensor_nElement(state, y));
-    checkCudaError(L);
-    return 0;
+	remove_white<<<(THCudaTensor_nElement(state, y) - 1) / TB + 1, TB>>>(
+		THCudaTensor_data(state, x),
+		THCudaTensor_data(state, y),
+		THCudaTensor_nElement(state, y));
+	checkCudaError(L);
+	return 0;
 }
 
 __global__ void copy_fill(float *in, float *out, int size, int in_size2, int in_size3, int out_size2, int out_size3)
@@ -1659,7 +1814,7 @@ __global__ void copy_fill(float *in, float *out, int size, int in_size2, int in_
 
 int copy_fill(lua_State *L)
 {
-    THCState *state = getCutorchState(L);
+	THCState *state = getCutorchState(L);
 	THCudaTensor *in = (THCudaTensor*)luaT_checkudata(L, 1, "torch.CudaTensor");
 	THCudaTensor *out = (THCudaTensor*)luaT_checkudata(L, 2, "torch.CudaTensor");
 
@@ -1707,9 +1862,9 @@ double random_exp(double lambda)
 
 int subset_dataset(lua_State *L)
 {
-    THLongTensor *index_ = (THLongTensor*)luaT_checkudata(L, 1, "torch.LongTensor");
-    THFloatTensor *input_ = (THFloatTensor*)luaT_checkudata(L, 2, "torch.FloatTensor");
-    THFloatTensor *output_ = (THFloatTensor*)luaT_checkudata(L, 3, "torch.FloatTensor");
+	THLongTensor *index_ = (THLongTensor*)luaT_checkudata(L, 1, "torch.LongTensor");
+	THFloatTensor *input_ = (THFloatTensor*)luaT_checkudata(L, 2, "torch.FloatTensor");
+	THFloatTensor *output_ = (THFloatTensor*)luaT_checkudata(L, 3, "torch.FloatTensor");
 
 	long *index = THLongTensor_data(index_);
 	float *input = THFloatTensor_data(input_);
@@ -1738,39 +1893,39 @@ int subset_dataset(lua_State *L)
 		}
 	}
 
-    lua_pushinteger(L, i);
+	lua_pushinteger(L, i);
 	return 1;
 }
 
 int make_dataset2(lua_State *L)
 {
-    THFloatTensor *disp_ = (THFloatTensor*)luaT_checkudata(L, 1, "torch.FloatTensor");
-    THFloatTensor *nnz_ = (THFloatTensor*)luaT_checkudata(L, 2, "torch.FloatTensor");
-    int img = luaL_checkinteger(L, 3);
-    int t = luaL_checkinteger(L, 4);
+	THFloatTensor *disp_ = (THFloatTensor*)luaT_checkudata(L, 1, "torch.FloatTensor");
+	THFloatTensor *nnz_ = (THFloatTensor*)luaT_checkudata(L, 2, "torch.FloatTensor");
+	int img = luaL_checkinteger(L, 3);
+	int t = luaL_checkinteger(L, 4);
 
-    float *disp = THFloatTensor_data(disp_);
-    float *nnz = THFloatTensor_data(nnz_);
+	float *disp = THFloatTensor_data(disp_);
+	float *nnz = THFloatTensor_data(nnz_);
 
-    int height = THFloatTensor_size(disp_, 2);
-    int width = THFloatTensor_size(disp_, 3);
-    int nnz_size = THFloatTensor_nElement(nnz_);
+	int height = THFloatTensor_size(disp_, 2);
+	int width = THFloatTensor_size(disp_, 3);
+	int nnz_size = THFloatTensor_nElement(nnz_);
 
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            if (disp[i * width + j] > 0.5) {
-                assert(t * 4 + 4 <= nnz_size);
-                nnz[t * 4 + 0] = img;
-                nnz[t * 4 + 1] = i;
-                nnz[t * 4 + 2] = j;
-                nnz[t * 4 + 3] = disp[i * width + j];
-                t++;
-            }
-        }
-    }
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			if (disp[i * width + j] > 0.5) {
+				assert(t * 4 + 4 <= nnz_size);
+				nnz[t * 4 + 0] = img;
+				nnz[t * 4 + 1] = i;
+				nnz[t * 4 + 2] = j;
+				nnz[t * 4 + 3] = disp[i * width + j];
+				t++;
+			}
+		}
+	}
 
-    lua_pushinteger(L, t);
-    return 1;
+	lua_pushinteger(L, t);
+	return 1;
 }
 
 int make_dataset(lua_State *L)
@@ -1845,56 +2000,56 @@ int make_dataset(lua_State *L)
 /* CPU implementation */
 int grey2jet(lua_State *L)
 {
-    THDoubleTensor *grey_img = (THDoubleTensor*)luaT_checkudata(L, 1, "torch.DoubleTensor");
-    THDoubleTensor *col_img = (THDoubleTensor*)luaT_checkudata(L, 2, "torch.DoubleTensor");
+	THDoubleTensor *grey_img = (THDoubleTensor*)luaT_checkudata(L, 1, "torch.DoubleTensor");
+	THDoubleTensor *col_img = (THDoubleTensor*)luaT_checkudata(L, 2, "torch.DoubleTensor");
 
-    assert(grey_img->nDimension == 2);
-    if (3 * THDoubleTensor_nElement(grey_img) != THDoubleTensor_nElement(col_img)) {
-        luaL_error(L, "Size mismatch");
-    }
+	assert(grey_img->nDimension == 2);
+	if (3 * THDoubleTensor_nElement(grey_img) != THDoubleTensor_nElement(col_img)) {
+		luaL_error(L, "Size mismatch");
+	}
 
-    int height = THDoubleTensor_size(grey_img, 0);
-    int width = THDoubleTensor_size(grey_img, 1);
+	int height = THDoubleTensor_size(grey_img, 0);
+	int width = THDoubleTensor_size(grey_img, 1);
 
-    double *gray_data = THDoubleTensor_data(grey_img);
-    double *col_data = THDoubleTensor_data(col_img);
+	double *gray_data = THDoubleTensor_data(grey_img);
+	double *col_data = THDoubleTensor_data(col_img);
 
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            double val = gray_data[i * width + j] * 4;
-            double r = 0, g = 0, b = 0;
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			double val = gray_data[i * width + j] * 4;
+			double r = 0, g = 0, b = 0;
 
-            if (-0.1 <= val && val < 0.5) {
-                r = 0;
-                g = 0;
-                b = 0.5 + val;
-            } else if (0.5 <= val && val < 1.5) {
-                r = 0;
-                g = val - 0.5;
-                b = 1;
-            } else if (1.5 <= val && val < 2.5) {
-                r = val - 1.5;
-                g = 1;
-                b = 1 - (val - 1.5);
-            } else if (2.5 <= val && val < 3.5) {
-                r = 1;
-                g = 1 - (val - 2.5);
-                b = 0;
-            } else if (3.5 <= val && val <= 4.1) {
-                r = 1 - (val - 3.5);
-                g = 0;
-                b = 0;
-            } else {
-                printf("val = %f\n", val);
-                assert(0);
-            }
+			if (-0.1 <= val && val < 0.5) {
+				r = 0;
+				g = 0;
+				b = 0.5 + val;
+			} else if (0.5 <= val && val < 1.5) {
+				r = 0;
+				g = val - 0.5;
+				b = 1;
+			} else if (1.5 <= val && val < 2.5) {
+				r = val - 1.5;
+				g = 1;
+				b = 1 - (val - 1.5);
+			} else if (2.5 <= val && val < 3.5) {
+				r = 1;
+				g = 1 - (val - 2.5);
+				b = 0;
+			} else if (3.5 <= val && val <= 4.1) {
+				r = 1 - (val - 3.5);
+				g = 0;
+				b = 0;
+			} else {
+				printf("val = %f\n", val);
+				assert(0);
+			}
 
-            col_data[(0 * height + i) * width + j] = r;
-            col_data[(1 * height + i) * width + j] = g;
-            col_data[(2 * height + i) * width + j] = b;
-        }
-    }
-    return 0;
+			col_data[(0 * height + i) * width + j] = r;
+			col_data[(1 * height + i) * width + j] = g;
+			col_data[(2 * height + i) * width + j] = b;
+		}
+	}
+	return 0;
 }
 
 static const struct luaL_Reg funcs[] = {
@@ -1904,6 +2059,7 @@ static const struct luaL_Reg funcs[] = {
 	{"cbca", cbca},
 	{"sgm", sgm},
 	{"sgm2", sgm2},
+	{"sgm3", sgm3},
 	{"outlier_detection", outlier_detection},
 	{"interpolate_occlusion", interpolate_occlusion},
 	{"interpolate_mismatch", interpolate_mismatch},
@@ -1921,8 +2077,8 @@ static const struct luaL_Reg funcs[] = {
 	{"make_dataset", make_dataset},
 	{"make_dataset2", make_dataset2},
 	{"remove_nonvisible", remove_nonvisible},
-    {"remove_occluded", remove_occluded},
-    {"remove_white", remove_white},
+	{"remove_occluded", remove_occluded},
+	{"remove_white", remove_white},
 	{"readPNG16", readPNG16},
 	{"writePNG16", writePNG16},
 	{"writePFM", writePFM},
