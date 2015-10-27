@@ -4,30 +4,23 @@ Stereo Matching by Training a Convolutional Neural Network to Compare Image Patc
 The repository contains
 
 - procedures to compute the stereo matching cost with a convolutional neural network;
-- procedures to train a convolutional neural network on the stereo matching task;
+- procedures to train a convolutional neural network on the stereo matching task; and
 - a basic stereo method (cross-based cost aggregation, semiglobal matching,
-  left-right consistency check, median filter, and bilateral filter); and
+  left-right consistency check, median filter, and bilateral filter); 
 
 A NVIDIA GPU with at least 6 GB of memory is required to run on the KITTI
 data set and 12 GB to run on the Middlebury data set. We tested the code on GTX
-Titan (KITTI only), K80, and GTX Titan X.  Note that the network architecture
-deviates from the description in the [CVPR
-paper](http://www.cv-foundation.org/openaccess/content_cvpr_2015/html/Zbontar_Computing_the_Stereo_2015_CVPR_paper.html);
-we describe the differences in our upcoming journal paper.  Please cite the
-[CVPR
-paper](http://www.cv-foundation.org/openaccess/content_cvpr_2015/html/Zbontar_Computing_the_Stereo_2015_CVPR_paper.html)
+Titan (KITTI only), K80, and GTX Titan X. 
+The code is released under the BSD 2-Clause license.
+Please cite our [paper](http://arxiv.org/abs/1510.05970)
 if you use code from this repository in your work.
 
-	@InProceedings{Zbontar_2015_CVPR,
-		author = {Zbontar, Jure and LeCun, Yann},
-		title = {Computing the Stereo Matching Cost With a Convolutional Neural Network},
-		journal = {The IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
-		month = {June},
-		year = {2015}
+	@article{zbontar2015stereo,
+	  title={Stereo Matching by Training a Convolutional Neural Network to Compare Image Patches},
+	  author={{\v{Z}}bontar, Jure and LeCun, Yann},
+	  journal={arXiv preprint arXiv:1510.05970},
+	  year={2015}
 	}
-
-The code is released under the BSD 2-Clause license.
-
 
 Download trained networks
 -------------------------
@@ -45,7 +38,7 @@ Compute the Matching Cost
 Install [Torch](http://torch.ch/), [OpenCV 2.4](http://opencv.org/), and
 [png++](http://www.nongnu.org/pngpp/).
 
-Run all following commands in the same directory as this README file.
+Run the following commands in the same directory as this README file.
 
 Compile the shared libraries:
 
@@ -106,8 +99,10 @@ The resulting disparity maps should look like this:
 
 ### Load the Output Binary Files ###
 
-You load the binary files by memory mapping them.  We include examples of
-memory mapping for some of the more popular programming languages.
+You can load the binary files (if, for example, you want to apply 
+different post-processing steps that you have written yourself) by memory 
+mapping them.  We include examples of memory mapping for some of 
+the more popular programming languages.
 
 - **Lua**
 
@@ -208,7 +203,7 @@ Run `main.lua` to train the network:
 	...
 
 The network is trained on a subset of all training examples with the remaining
-examples used for validation; to train on all examples replace use
+examples used for validation; to train on all examples use
 
 	$ ./main.lua kitti slow -a train_all
 
@@ -217,7 +212,7 @@ on the KITTI 2015 run
 
 	$ ./main.lua kitti2015 slow -a train_tr
 
-To train the fast architecture instead of the accurate architecture use
+To train the fast architecture instead use
 
 	$ ./main.lua kitti fast -a train_tr
 
@@ -235,13 +230,13 @@ Run `download_middlebury.sh` to download the training data
 
 	$ ./download_middlebury.sh
 
-The data set is downloaded to the `data.mb/unzip` directory.
+The data set is downloaded into the `data.mb/unzip` directory.
 
 Compile the [MiddEval3-SDK](http://vision.middlebury.edu/stereo/submit3/). You
 should end up with the `computemask` binary in one of the directories listed in
 your `PATH` enviromential variable.  
 
-Install [ImageMagick](http://www.imagemagick.org/script/index.php), as the
+Install [ImageMagick](http://www.imagemagick.org/script/index.php); the
 preprocessing steps requires the `convert` binary to resize the images.
 
 Run the preprocessing script:
@@ -263,7 +258,7 @@ Use `main.lua` to train the network:
 Other Useful Commands
 ---------------------
 
-Compute the loss on the validation set:
+Compute the loss on the validation set (useful for setting hyperparameters):
 
 	$ ./main.lua kitti fast -a test_te -net_fname net/net_kitti_fast_-a_train_tr.t7 
 	kitti fast -a test_te -net_fname net/net_kitti_fast_-a_train_tr.t7 
