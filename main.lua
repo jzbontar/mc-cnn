@@ -592,7 +592,7 @@ function save_net(epoch)
    else
       fname = ('net/net_%s_%d.t7'):format(cmd_str, epoch)
    end
-   torch.save(fname, obj)
+   torch.save(fname, obj, 'ascii')
    return fname
 end
 
@@ -886,11 +886,11 @@ end
 
 if not opt.use_cache then
    if arch == 'slow' then
-      net = torch.load(opt.net_fname)
+      net = torch.load(opt.net_fname, 'ascii')
       net_te = net[1]
       net_te2 = net[2]
    elseif arch == 'fast' then
-      net_te = torch.load(opt.net_fname)[1]
+      net_te = torch.load(opt.net_fname, 'ascii')[1]
       net_te.modules[#net_te.modules] = nil
       net_te2 = nn.StereoJoin(1):cuda()
    end
