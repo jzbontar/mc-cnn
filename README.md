@@ -97,6 +97,12 @@ The resulting disparity maps should look like this:
 - `right.png`  
   <img src="samples/output/right_cnn.png" style="width: 25%;"/>
 
+Note that `-disp_max 70` is used only as an example. To reproduce our
+results on the KITTI data sets use `-disp_max 228`.
+
+See the [predict_kitti.lua](predict_kitti.lua) script for how you might
+call `main.lua` in a loop, for multiple image pairs.
+
 ### Load the Output Binary Files ###
 
 You can load the binary files (if, for example, you want to apply 
