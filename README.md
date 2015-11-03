@@ -56,7 +56,7 @@ To run the stereo algorithm on a stereo pair from the KITTI 2012 training set&md
 
 &mdash;call `main.lua` with the following arguments:
 
-	$ ./main.lua kitti fast -a predict -net_fname net/net_kitti_fast_-a_train_tr.t7 -left samples/input/kittiL.png -right samples/input/kittiR.png -disp_max 70
+	$ ./main.lua kitti fast -a predict -net_fname net/net_kitti_fast_-a_train_all.t7 -left samples/input/kittiL.png -right samples/input/kittiR.png -disp_max 70
 	Writing right.bin, 1 x 70 x 370 x 1226
 	Writing left.bin, 1 x 70 x 370 x 1226
 	Writing disp.bin, 1 x 1 x 370 x 1226
@@ -85,7 +85,7 @@ If you wish to use the raw convolutional neural network outputs, that is,
 without applying cross-based cost aggregation and semiglobal matching, run
 the following command:
 
-	$ ./main.lua kitti fast -a predict -net_fname net/net_kitti_fast_-a_train_tr.t7 -left samples/input/kittiL.png -right samples/input/kittiR.png -disp_max 70 -sm_terminate cnn
+	$ ./main.lua kitti fast -a predict -net_fname net/net_kitti_fast_-a_train_all.t7 -left samples/input/kittiL.png -right samples/input/kittiR.png -disp_max 70 -sm_terminate cnn
 	Writing right.bin, 1 x 70 x 370 x 1226
 	Writing left.bin, 1 x 70 x 370 x 1226
 	Writing disp.bin, 1 x 1 x 370 x 1226
@@ -280,8 +280,8 @@ The validation error rate of the fast architecture on the KITTI 2012 data set is
 
 Prepare files for submission to the KITTI and Middlebury evaluation server.
 
-	$ ./main.lua kitti fast -a submit -net_fname net/net_kitti_fast_-a_train_tr.t7 
-	kitti fast -a submit -net_fname net/net_kitti_fast_-a_train_tr.t7 
+	$ ./main.lua kitti fast -a submit -net_fname net/net_kitti_fast_-a_train_all.t7 
+	kitti fast -a submit -net_fname net/net_kitti_fast_-a_train_all.t7 
 	  adding: 000038_10.png (deflated 0%)
 	  adding: 000124_10.png (deflated 0%)
 	  ...
