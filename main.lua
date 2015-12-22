@@ -1077,8 +1077,14 @@ function stereo_predict(x_batch, id)
 end
 
 if opt.a == 'predict' then
-   x0 = image.load(opt.left, 1, 'byte'):float()
-   x1 = image.load(opt.right, 1, 'byte'):float()
+   x0 = image.load(opt.left, nil, 'byte'):float()
+   x1 = image.load(opt.right, nil, 'byte'):float()
+
+   if x0:size(1) == 3 then
+      assert(x1:size(1) == 3)
+      x0 = image.rgb2y(x0)
+      x1 = image.rgb2y(x1)
+   end
    disp_max = opt.disp_max
 
    x0:add(-x0:mean()):div(x0:std())
