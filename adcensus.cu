@@ -1385,7 +1385,7 @@ struct Margin2_functor {
 	__device__ float backward(float pos, float neg, int which) {
 		float f = neg - pos + margin;
 		if (which == 0) {
-			return -1 * (f > 0);
+			return -1. * (f > 0);
 		} else {
 			return f > 0;
 		}
@@ -2052,6 +2052,12 @@ int grey2jet(lua_State *L)
 	return 0;
 }
 
+int version(lua_State* L)
+{
+	printf("libadcensus version 0.0.5\n");
+	return 0;
+}
+
 static const struct luaL_Reg funcs[] = {
 	{"ad", ad},
 	{"census", census},
@@ -2084,6 +2090,8 @@ static const struct luaL_Reg funcs[] = {
 	{"writePFM", writePFM},
 	{"grey2jet", grey2jet},
 	{"spatial_argmin", spatial_argmin},
+
+	{"version", version},
 	{NULL, NULL}
 };
 
