@@ -1203,8 +1203,9 @@ for _, i in ipairs(examples) do
          -- savePNG(('tmp/fos_%d.png'):format(i), pred)
          base = 'out/' .. fname_submit[i - (#X - #fname_submit)]
          os.execute('mkdir -p ' .. base)
-         adcensus.writePFM(image.vflip(pred[{1,1}]:float()), base .. '/disp0MC-CNN.pfm')
-         local f = io.open(base .. '/timeMC-CNN.txt', 'w')
+         local method_name = 'MC-CNN-' .. (arch == 'fast' and 'fst' or 'acrt' )
+         adcensus.writePFM(image.vflip(pred[{1,1}]:float()), base .. '/disp0' .. method_name .. '.pfm')
+         local f = io.open(base .. '/time' .. method_name .. '.txt', 'w')
          f:write(tostring(runtime))
          f:close()
       end
