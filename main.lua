@@ -1181,6 +1181,7 @@ for _, i in ipairs(examples) do
    x_batch[1]:copy(x0)
    x_batch[2]:copy(x1)
 
+   collectgarbage()
    cutorch.synchronize()
    sys.tic()
    pred = stereo_predict(x_batch, id)
