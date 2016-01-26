@@ -1275,7 +1275,7 @@ end
 
 if opt.a == 'submit' then
    -- zip
-   os.execute('cd out; zip -r submission.zip .')
+   os.execute('cd out; zip -r submission.zip . -x .empty')
 else
    print(err_sum / #examples)
 end
