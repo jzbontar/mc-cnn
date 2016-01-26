@@ -12,7 +12,7 @@ extern "C" {
 #include <math_constants.h>
 #include <stdint.h>
 #include <unistd.h>
-#include <png++/png.hpp>
+#include <png++/image.hpp>
 
 #define TB 128
 
