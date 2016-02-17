@@ -278,8 +278,8 @@ The validation error rate of the fast architecture on the KITTI 2012 data set is
 
 \***
 
-Compute the error rate on the validation set on one dataset for a network that
-has been trained on different dataset.
+Compute the error rate on the validation set of one dataset for a network that
+has been trained on a different dataset.
 
 	$ ./main.lua kitti fast -a test_te -net_fname net/net_mb_fast_-a_train_all.t7
 	kitti fast -a test_te -net_fname net/net_mb_fast_-a_train_all.t7
