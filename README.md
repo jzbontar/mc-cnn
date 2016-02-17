@@ -264,7 +264,7 @@ Use `main.lua` to train the network:
 Other Useful Commands
 ---------------------
 
-Compute the loss on the validation set (useful for setting hyperparameters):
+Compute the error rate on the validation set (useful for setting hyperparameters):
 
 	$ ./main.lua kitti fast -a test_te -net_fname net/net_kitti_fast_-a_train_tr.t7 
 	kitti fast -a test_te -net_fname net/net_kitti_fast_-a_train_tr.t7 
@@ -274,7 +274,24 @@ Compute the loss on the validation set (useful for setting hyperparameters):
 	0.72730183601379        0.023603160822285
 	0.030291934952454
 
-The validation error rate of the fast architecture on the KITTI 2012 data set is 3.02%.
+The validation error rate of the fast architecture on the KITTI 2012 data set is 3.029%.
+
+\***
+
+Compute the error rate on the validation set on one dataset for a network that
+has been trained on different dataset.
+
+	$ ./main.lua kitti fast -a test_te -net_fname net/net_mb_fast_-a_train_all.t7
+	kitti fast -a test_te -net_fname net/net_mb_fast_-a_train_all.t7
+	2.1474301815033	0.0071447750148986
+	...
+	1.4276049137115	0.024273838024622
+	1.4282908439636	0.01881285579564
+	1.408842086792	0.021741689597834
+	0.031564540460366
+
+The validation error rate of the fast architecture tested on KITTI 2012 but trained on
+Middlebury is 3.156%.
 
 \***
 
