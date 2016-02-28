@@ -13,7 +13,7 @@ assert(dataset == 'kitti' or dataset == 'kitti2015' or dataset == 'mb')
 assert(arch == 'fast' or arch == 'slow' or arch == 'ad' or arch == 'census')
 
 cmd = torch.CmdLine()
-cmd:option('-gpu', 0, 'gpu id')
+cmd:option('-gpu', 1, 'gpu id')
 cmd:option('-seed', 42, 'random seed')
 cmd:option('-debug', false)
 cmd:option('-d', 'kitti | mb')
@@ -321,12 +321,6 @@ if opt.print_args then
    os.exit()
 end
 
-ffi = require 'ffi'
-ffi.cdef[[
-int putenv(const char *string);
-]]
-ffi.C.putenv(('CUDA_VISIBLE_DEVICES=%d'):format(opt.gpu))
-
 require 'cunn'
 require 'cutorch'
 require 'image'
@@ -344,6 +338,7 @@ include('SpatialLogSoftMax.lua')
 
 torch.manualSeed(opt.seed)
 cutorch.manualSeed(opt.seed)
+cutorch.setDevice(tonumber(opt.gpu))
 
 cmd_str = dataset .. '_' .. arch
 for i = 1,#arg do
