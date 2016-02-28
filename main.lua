@@ -906,7 +906,7 @@ function forward_free(net, input)
    for i=1,#net.modules do
       net.modules[i].oDesc = nil
       local nextOutput = net.modules[i]:updateOutput(currentOutput)
-      if currentOutput ~= nextOutput then
+      if currentOutput:storage() ~= nextOutput:storage() then
          currentOutput:storage():resize(1)
          currentOutput:resize(0)
       end
