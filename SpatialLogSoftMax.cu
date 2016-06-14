@@ -16,7 +16,7 @@ __global__ void cunn_SpatialLogSoftMax_updateOutput_kernel
   if (idx < data_size) {
     int next_idx = idx + feature_size;
     float logsum = 0.0;
-    float max = -THInf;
+    float max = -2e38;
     // max
     for(int i = idx; i < next_idx; i += spatial_size) {
       if (max < input[i]) max = input[i];
