@@ -1,6 +1,6 @@
 left = memmapfile('../left.bin', 'Format', 'single').Data;
-left = reshape(left, [1 70 370 1226]);
+left = permute(reshape(left, [1226 370 70]), [3 2 1]);
 right = memmapfile('../right.bin', 'Format', 'single').Data;
-right = reshape(right, [1 70 370 1226]);
-disp = memmapfile('../disp.bin', 'Format', 'single').Data;
-disp = reshape(right, [1 1 370 1226]);
+right = permute(reshape(right, [1226 370 70]), [3 2 1]);
+disparity = memmapfile('../disp.bin', 'Format', 'single').Data;
+disparity = reshape(disparity, [1226 370])';
