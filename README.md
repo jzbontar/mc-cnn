@@ -54,8 +54,9 @@ To run the stereo algorithm on a stereo pair from the KITTI 2012 training set&md
 - Right input image  
   <img src="samples/input/kittiR.png" style="width: 25%;"/>
 
-&mdash;call `main.lua` with the following arguments:
+&mdash;download the pretrained network and call `main.lua` with the following arguments:
 
+	$ wget -P net/ https://s3.amazonaws.com/mc-cnn/net_kitti_fast_-a_train_all.t7
 	$ ./main.lua kitti fast -a predict -net_fname net/net_kitti_fast_-a_train_all.t7 -left samples/input/kittiL.png -right samples/input/kittiR.png -disp_max 70
 	Writing right.bin, 1 x 70 x 370 x 1226
 	Writing left.bin, 1 x 70 x 370 x 1226
