@@ -15,12 +15,15 @@ The code is released under the BSD 2-Clause license.
 Please cite our [paper](http://arxiv.org/abs/1510.05970)
 if you use code from this repository in your work.
 
-	@article{zbontar2015stereo,
-	  title={Stereo Matching by Training a Convolutional Neural Network to Compare Image Patches},
-	  author={{\v{Z}}bontar, Jure and LeCun, Yann},
-	  journal={arXiv preprint arXiv:1510.05970},
-	  year={2015}
+	@article{zbontar2016stereo,
+	  title={Stereo matching by training a convolutional neural network to compare image patches},
+	  author={Zbontar, Jure and LeCun, Yann},
+	  journal={Journal of Machine Learning Research},
+	  volume={17},
+	  pages={1--32},
+	  year={2016}
 	}
+
 
 Download trained networks
 -------------------------
