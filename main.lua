@@ -17,7 +17,7 @@ cmd:option('-gpu', 1, 'gpu id')
 cmd:option('-seed', 42, 'random seed')
 cmd:option('-debug', false)
 cmd:option('-d', 'kitti | mb')
-cmd:option('-a', 'train_tr | train_all | test_te | submit | time | predict', 'train')
+cmd:option('-a', 'train_tr | train_all | test_te | test_all | submit | time | predict', 'train')
 cmd:option('-net_fname', '')
 cmd:option('-make_cache', false)
 cmd:option('-use_cache', false)
@@ -398,7 +398,7 @@ if dataset == 'kitti' or dataset == 'kitti2015' then
    n_input_plane = 1
    err_at = 3
 
-   if opt.a == 'train_tr' or opt.a == 'train_all' or opt.a == 'test_te' or opt.a == 'submit' then
+   if opt.a == 'train_tr' or opt.a == 'train_all' or opt.a == 'test_te' or opt.a == 'test_all' or opt.a == 'submit' then
       if opt.at == 1 then
          function load(fname)
             local X_12 = fromfile('data.kitti/' .. fname)
@@ -451,7 +451,7 @@ elseif dataset == 'mb' then
    end
    err_at = 1
 
-   if opt.a == 'train_tr' or opt.a == 'train_all' or opt.a == 'test_te' or opt.a == 'submit' then
+   if opt.a == 'train_tr' or opt.a == 'train_all' or opt.a == 'test_te' or opt.a == 'test_all' or opt.a == 'submit' then
       data_dir = ('data.mb.%s_%s'):format(opt.rect, opt.color)
       te = fromfile(('%s/te.bin'):format(data_dir))
       metadata = fromfile(('%s/meta.bin'):format(data_dir))
@@ -1125,6 +1125,12 @@ elseif opt.a == 'test_te' then
       end
       table.insert(examples, {5, 3})
       table.insert(examples, {5, 4})
+   end
+elseif opt.a == 'test_all' then
+   if dataset == 'kitti' or dataset == 'kitti2015' then
+      examples = torch.totable(torch.cat(tr, te))
+   elseif dataset == 'mb' then
+      assert(false, 'test_all not supported on Middlebury.')
    end
 end
 
