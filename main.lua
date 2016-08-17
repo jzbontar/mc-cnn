@@ -1044,7 +1044,7 @@ function stereo_predict(x_batch, id)
       end
 
       _, d = torch.min(vol, 2)
-      disp[direction == 1 and 1 or 2] = d:add(-1)
+      disp[direction == 1 and 1 or 2] = d:cuda():add(-1)
    end
    collectgarbage()
 
