@@ -652,7 +652,9 @@ if opt.a == 'train_tr' or opt.a == 'train_all' or opt.a == 'time' then
       nnz = nnz_tr
    end
 
-   perm = torch.randperm(nnz:size(1))
+   if opt.a ~= 'time' then
+      perm = torch.randperm(nnz:size(1))
+   end
 
    local fm = torch.totable(torch.linspace(opt.fm, opt.fm, opt.l1):int())
 
