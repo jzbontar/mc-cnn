@@ -327,6 +327,7 @@ require 'image'
 require 'libadcensus'
 require 'libcv'
 require 'cudnn'
+cudnn.benchmark = true
 
 include('Margin2.lua')
 include('Normalize2.lua')
@@ -334,7 +335,7 @@ include('BCECriterion2.lua')
 include('StereoJoin.lua')
 include('StereoJoin1.lua')
 include('SpatialConvolution1_fw.lua')
-include('SpatialLogSoftMax.lua')
+-- include('SpatialLogSoftMax.lua')
 
 torch.manualSeed(opt.seed)
 cutorch.manualSeed(opt.seed)
