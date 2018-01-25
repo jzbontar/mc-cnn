@@ -34,6 +34,14 @@ require 'image'
 require 'torch'
 require 'libadcensus'
 
+function fromfile(fname)
+   local size = io.open(fname):seek('end')
+   local x = torch.FloatTensor(torch.FloatStorage(fname, false, size / 4))
+   local nan_mask = x:ne(x)
+   x[nan_mask] = 1e38
+   return x
+end
+
 action = 'test'
 assert(action == 'test' or action == 'submit')
 
@@ -59,7 +67,7 @@ for i = 0, n_te - 1 do
    local img_height = im:size(2)
    local img_width = im:size(3)
    os.execute(cmd:format(im0, im1) .. ' > /dev/null')
-   local disp = torch.FloatTensor(torch.FloatStorage('disp.bin')):view(1, 1, img_height, img_width)
+   local disp = fromfile('disp.bin'):view(1, 1, img_height, img_width)
 
    if action == 'test' then
       -- ground truth
